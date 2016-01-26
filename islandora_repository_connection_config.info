@@ -1,0 +1,7 @@
+name = Islandora Connection Config
+description = "Configure Tuque connection specifics"
+package = Islandora
+dependencies[] = islandora
+version = 7.x-dev
+core = 7.x
+configure = admin/islandora/configure
