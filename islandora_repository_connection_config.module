@@ -57,14 +57,14 @@ function islandora_repository_connection_config_form_islandora_repository_admin_
       '#description' => t('An amount of time in seconds (empty or 0 uses the cURL default). CURL calls will be aborted if they pass this threshold. Corresponds to "CURLOPT_TIMEOUT".'),
       '#type' => 'textfield',
       '#default_value' => $connection_default['timeout'],
-      '#element_validate' => array('islandora_zero_or_positive_integer_validate'),
+      '#element_validate' => array('islandora_repository_connection_config_zero_or_positive_integer_validate'),
     ),
     'connectTimeout' => array(
       '#title' => t('Connection timeout'),
       '#description' => t('An upper bound on the amount of time in seconds to wait while attempting to establish the connection, corresponding to "CURLOPT_CONNECTTIMEOUT". 0 will attempt to wait indefinitely.'),
       '#type' => 'textfield',
       '#default_value' => $connection_default['connectTimeout'],
-      '#element_validate' => array('islandora_zero_or_positive_integer_validate'),
+      '#element_validate' => array('islandora_repository_connection_config_zero_or_positive_integer_validate'),
     ),
     'userAgent' => array(
       '#title' => t('User Agent'),
@@ -94,7 +94,7 @@ function islandora_repository_connection_config_form_islandora_repository_admin_
  *
  * Sets a form error if the value is not zero or a positive integer.
  */
-function islandora_zero_or_positive_integer_validate($element, &$form_state) {
+function islandora_repository_connection_config_zero_or_positive_integer_validate($element, &$form_state) {
   // Large copy/pasta from Drupal's element_validate_integer_positive().
   $value = $element['#value'];
   if ($value !== '' && (!is_numeric($value) || intval($value) != $value || $value < 0)) {
