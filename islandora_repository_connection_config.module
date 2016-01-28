@@ -95,7 +95,7 @@ function islandora_repository_connection_config_form_islandora_repository_admin_
  * Sets a form error if the value is not zero or a positive integer.
  */
 function islandora_repository_connection_config_zero_or_positive_integer_validate($element, &$form_state) {
-  // Large copy/pasta from Drupal's element_validate_integer_positive().
+  // Largely copy/pasta from Drupal's element_validate_integer_positive().
   $value = $element['#value'];
   if ($value !== '' && (!is_numeric($value) || intval($value) != $value || $value < 0)) {
     form_error($element, t('%name must be either zero or a positive integer.', array('%name' => $element['#title'])));
