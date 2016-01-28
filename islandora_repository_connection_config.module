@@ -8,7 +8,7 @@
  * Implements hook_islandora_repository_connection_construction_alter().
  */
 function islandora_repository_connection_config_islandora_repository_connection_construction_alter($instance) {
-  foreach (variable_get('islandora_repository_connection_config', array()) as $key => $value) {
+  foreach (variable_get('islandora_repository_connection_config', islandora_repository_connection_config_get_defaults()) as $key => $value) {
     $instance->{$key} = $value;
   }
 }
@@ -17,16 +17,7 @@ function islandora_repository_connection_config_islandora_repository_connection_
  * Implements hook_form_islandora_repository_admin_form_alter().
  */
 function islandora_repository_connection_config_form_islandora_repository_admin_alter(&$form, &$form_state) {
-  $connection_default = variable_get('islandora_repository_connection_config', array(
-    'cookies' => TRUE,
-    'verifyHost' => TRUE,
-    'verifyPeer' => TRUE,
-    'timeout' => NULL,
-    'connectTimeout' => 5,
-    'userAgent' => NULL,
-    'reuseConnection' => TRUE,
-    'debug' => FALSE,
-  ));
+  $connection_default = variable_get('islandora_repository_connection_config', islandora_repository_connection_config_get_defaults());
   $form['islandora_tabs']['islandora_repository_connection_config'] = array(
     '#type' => 'fieldset',
     '#tree' => TRUE,
@@ -100,4 +91,24 @@ function islandora_repository_connection_config_zero_or_positive_integer_validat
   if ($value !== '' && (!is_numeric($value) || intval($value) != $value || $value < 0)) {
     form_error($element, t('%name must be either zero or a positive integer.', array('%name' => $element['#title'])));
   }
+}
+
+/**
+ * Helper to define the array of defaults.
+ *
+ * @return array
+ *   An associative array representing the defaults for the
+ *   'islandora_repository_connection_config' variable.
+ */
+function islandora_repository_connection_config_get_defaults() {
+  return array(
+    'cookies' => TRUE,
+    'verifyHost' => TRUE,
+    'verifyPeer' => TRUE,
+    'timeout' => NULL,
+    'connectTimeout' => 5,
+    'userAgent' => NULL,
+    'reuseConnection' => TRUE,
+    'debug' => FALSE,
+  );
 }
