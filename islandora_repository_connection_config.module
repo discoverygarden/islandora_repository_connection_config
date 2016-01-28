@@ -28,7 +28,7 @@ function islandora_repository_connection_config_form_islandora_repository_admin_
     'cookies' => array(
       '#title' => t('Cookies'),
       '#type' => 'checkbox',
-      '#description' => t('Indicate if the HTTP connection use cookies.'),
+      '#description' => t('Indicate if the HTTP connection should use cookies.'),
       '#default_value' => $connection_default['cookies'],
     ),
     'verifyHost' => array(
