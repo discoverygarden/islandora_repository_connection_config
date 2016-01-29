@@ -1,8 +1,8 @@
-# MODULE NAME
+# Islandora Repository Connection Configuration
 
 ## Introduction
 
-DESCRIPTION
+Tuque has a number of parameters which are not otherwise exposed... So let's expose them.
 
 ## Requirements
 
@@ -14,6 +14,15 @@ This module requires the following modules/libraries:
 ## Installation
 
 Install as usual, see [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
+
+## Usage
+
+We add another vertical tab to `admin/islandora/configure`, called "Tuque connection config", to expose connection parameters.
+
+There are a couple excluded from our form, such as:
+* `HttpConnection::$sslVersion`, corresponding to `CURLOPT_SSLVERSION` (which presently has a big note in the PHP manual pages recommending the default)
+* `HttpConnection::$url`, since it is URL provided in the core config
+* `HttpConnection::$username` and `HttpConnection::$password`, since they are handled in our usual instantiation routine (set with the current user creds)
 
 ## Troubleshooting/Issues
 
