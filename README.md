@@ -6,7 +6,7 @@ Tuque has a number of parameters which are not otherwise exposed... So let's exp
 
 ## Requirements
 
-This module requires the following modules/libraries:
+While it does not strictly require them, this module's only purpose is to augment:
 
 * [Islandora](https://github.com/islandora/islandora)
 * [Tuque](https://github.com/islandora/tuque)
