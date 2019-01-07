@@ -8,16 +8,26 @@
  * Implements hook_islandora_repository_connection_construction_alter().
  */
 function islandora_repository_connection_config_islandora_repository_connection_construction_alter($instance) {
-  foreach (variable_get('islandora_repository_connection_config', islandora_repository_connection_config_get_defaults()) as $key => $value) {
-    $instance->{$key} = $value;
-  }
+  // @FIXME
+// // @FIXME
+// // This looks like another module's variable. You'll need to rewrite this call
+// // to ensure that it uses the correct configuration object.
+// foreach (variable_get('islandora_repository_connection_config', islandora_repository_connection_config_get_defaults()) as $key => $value) {
+//     $instance->{$key} = $value;
+//   }
+
 }
 
 /**
  * Implements hook_form_islandora_repository_admin_form_alter().
  */
 function islandora_repository_connection_config_form_islandora_repository_admin_alter(&$form, &$form_state) {
-  $connection_default = variable_get('islandora_repository_connection_config', islandora_repository_connection_config_get_defaults());
+  // @FIXME
+// // @FIXME
+// // This looks like another module's variable. You'll need to rewrite this call
+// // to ensure that it uses the correct configuration object.
+// $connection_default = variable_get('islandora_repository_connection_config', islandora_repository_connection_config_get_defaults());
+
   $form['islandora_tabs']['islandora_repository_connection_config'] = array(
     '#type' => 'fieldset',
     '#tree' => TRUE,

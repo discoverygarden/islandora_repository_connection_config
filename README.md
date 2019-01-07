@@ -8,16 +8,17 @@ Tuque has a number of parameters which are not otherwise exposed... So let's exp
 
 While it does not strictly require them, this module's only purpose is to augment:
 
-* [Islandora](https://github.com/islandora/islandora)
+* [Islandora](https://github.com/discoverygarden/islandora)
 * [Tuque](https://github.com/islandora/tuque)
 
 ## Installation
 
-Install as usual, see [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
+Install as
+[usual](https://www.drupal.org/docs/8/extending-drupal-8/installing-drupal-8-modules).
 
 ## Usage
 
-We add another vertical tab to `admin/islandora/configure`, called "Tuque connection config", to expose connection parameters.
+We add another vertical tab to `admin/config/islandora/configure`, called "Tuque connection config", to expose connection parameters.
 
 There are a couple excluded from our form, such as:
 * `HttpConnection::$sslVersion`, corresponding to `CURLOPT_SSLVERSION` (which presently has a big note in the PHP manual pages recommending the default)
