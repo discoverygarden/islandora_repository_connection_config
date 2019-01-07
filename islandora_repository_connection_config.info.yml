@@ -1,0 +1,7 @@
+name: 'Islandora Connection Config'
+description: 'Configure Tuque connection specifics'
+package: 'Islandora'
+configure: islandora.repository_admin
+core: 8.x
+type: module
+php: '5.5.9'
