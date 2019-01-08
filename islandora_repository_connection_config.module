@@ -86,6 +86,16 @@ function islandora_repository_connection_config_form_islandora_repository_admin_
       '#default_value' => $connection_default['debug'],
     ],
   ];
+  $form['#submit'][] = 'islandora_repository_connection_config_form_islandora_repository_admin_submit';
+}
+
+/**
+ * Submit handler for the Islandora config additions.
+ */
+function islandora_repository_connection_config_form_islandora_repository_admin_submit($form, FormStateInterface $form_state) {
+  $config = \Drupal::configFactory()->getEditable('islandora_repository_connection_config.settings');
+  $config->set('islandora_repository_connection_config', $form_state->getValue('islandora_repository_connection_config'));
+  $config->save();
 }
 
 /**
