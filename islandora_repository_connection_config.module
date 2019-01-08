@@ -25,8 +25,9 @@ function islandora_repository_connection_config_form_islandora_repository_admin_
   $connection_default = \Drupal::config('islandora_repository_connection_config.settings')->get('islandora_repository_connection_config') +
     islandora_repository_connection_config_get_defaults();
 
-  $form['islandora_tabs']['islandora_repository_connection_config'] = [
-    '#type' => 'fieldset',
+  $form['islandora_repository_connection_config'] = [
+    '#type' => 'details',
+    '#group' => 'islandora_tabs',
     '#tree' => TRUE,
     '#title' => t('Tuque connection config'),
     '#description' => t('Many of these parameters will reference parameters from the <a href="@curl_url">PHP cURL Library</a>.', [
