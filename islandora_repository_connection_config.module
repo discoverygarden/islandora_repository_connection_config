@@ -1,14 +1,19 @@
 <?php
+
 /**
  * @file
  * General hook implementations.
  */
 
+use Drupal\Core\Form\FormStateInterface;
+
 /**
  * Implements hook_islandora_repository_connection_construction_alter().
  */
 function islandora_repository_connection_config_islandora_repository_connection_construction_alter($instance) {
-  foreach (variable_get('islandora_repository_connection_config', islandora_repository_connection_config_get_defaults()) as $key => $value) {
+  $settings = \Drupal::config('islandora_repository_connection_config.settings')->get('islandora_repository_connection_config') +
+    islandora_repository_connection_config_get_defaults();
+  foreach ($settings as $key => $value) {
     $instance->{$key} = $value;
   }
 }
@@ -16,68 +21,81 @@ function islandora_repository_connection_config_islandora_repository_connection_
 /**
  * Implements hook_form_islandora_repository_admin_form_alter().
  */
-function islandora_repository_connection_config_form_islandora_repository_admin_alter(&$form, &$form_state) {
-  $connection_default = variable_get('islandora_repository_connection_config', islandora_repository_connection_config_get_defaults());
-  $form['islandora_tabs']['islandora_repository_connection_config'] = array(
-    '#type' => 'fieldset',
+function islandora_repository_connection_config_form_islandora_repository_admin_alter(&$form, FormStateInterface $form_state) {
+  $connection_default = \Drupal::config('islandora_repository_connection_config.settings')->get('islandora_repository_connection_config') +
+    islandora_repository_connection_config_get_defaults();
+
+  $form['islandora_repository_connection_config'] = [
+    '#type' => 'details',
+    '#group' => 'islandora_tabs',
     '#tree' => TRUE,
     '#title' => t('Tuque connection config'),
-    '#description' => t('Many of these parameters will reference parameters from the <a href="@curl_url">PHP cURL Library</a>.', array(
+    '#description' => t('Many of these parameters will reference parameters from the <a href="@curl_url">PHP cURL Library</a>.', [
       '@curl_url' => 'http://php.net/manual/function.curl-setopt.php',
-    )),
-    'cookies' => array(
+    ]),
+    'cookies' => [
       '#title' => t('Cookies'),
       '#type' => 'checkbox',
       '#description' => t('Indicate if the HTTP connection should use cookies.'),
       '#default_value' => $connection_default['cookies'],
-    ),
-    'verifyHost' => array(
+    ],
+    'verifyHost' => [
       '#title' => t('Verify SSL Host'),
       '#description' => t('Check for existence and match of the common name, setting "CURLOPT_SSL_VERIFYHOST" to 2.'),
       '#type' => 'checkbox',
       '#default_value' => $connection_default['verifyHost'],
-    ),
-    'verifyPeer' => array(
+    ],
+    'verifyPeer' => [
       '#title' => t('Verify SSL Peer'),
       '#description' => t('Verify peer certificates, corresponding to "CURLOPT_SSL_VERIFYPEER".'),
       '#type' => 'checkbox',
       '#default_value' => $connection_default['verifyPeer'],
-    ),
-    'timeout' => array(
+    ],
+    'timeout' => [
       '#title' => t('Total timeout'),
       '#description' => t('An amount of time in seconds (empty or 0 uses the cURL default). CURL calls will be aborted if they pass this threshold. Corresponds to "CURLOPT_TIMEOUT".'),
       '#type' => 'textfield',
       '#default_value' => $connection_default['timeout'],
-      '#element_validate' => array('islandora_repository_connection_config_zero_or_positive_integer_validate'),
-    ),
-    'connectTimeout' => array(
+      '#element_validate' => ['islandora_repository_connection_config_zero_or_positive_integer_validate'],
+    ],
+    'connectTimeout' => [
       '#title' => t('Connection timeout'),
       '#description' => t('An upper bound on the amount of time in seconds to wait while attempting to establish the connection, corresponding to "CURLOPT_CONNECTTIMEOUT". 0 will attempt to wait indefinitely.'),
       '#type' => 'textfield',
       '#default_value' => $connection_default['connectTimeout'],
-      '#element_validate' => array('islandora_repository_connection_config_zero_or_positive_integer_validate'),
-    ),
-    'userAgent' => array(
+      '#element_validate' => ['islandora_repository_connection_config_zero_or_positive_integer_validate'],
+    ],
+    'userAgent' => [
       '#title' => t('User Agent'),
-      '#description' => t('The string as which Tuque will identify, corresponding to "CURLOPT_USERAGENT". See <a href="@rfc_link">RFC 7231, Section 5.5.3</a> for details on the contents. The empty string will cause cURL to use its default.', array(
+      '#description' => t('The string as which Tuque will identify, corresponding to "CURLOPT_USERAGENT". See <a href="@rfc_link">RFC 7231, Section 5.5.3</a> for details on the contents. The empty string will cause cURL to use its default.', [
         '@rfc_link' => 'http://tools.ietf.org/html/rfc7231#section-5.5.3',
-      )),
+      ]),
       '#type' => 'textfield',
       '#default_value' => $connection_default['userAgent'],
-    ),
-    'reuseConnection' => array(
+    ],
+    'reuseConnection' => [
       '#title' => t('Reuse Connection'),
       '#description' => t('Causes the cURL context (and ideally the underlying TCP connection) to be reused between (most) Tuque requests.'),
       '#type' => 'checkbox',
       '#default_value' => $connection_default['reuseConnection'],
-    ),
-    'debug' => array(
+    ],
+    'debug' => [
       '#title' => t('Debug mode'),
       '#description' => t('Corresponds to "CURLOPT_VERBOSE"; outputs additional information to STDERR (likely showing up in your server error logs, but ultimately dependent on how the code is being run).'),
       '#type' => 'checkbox',
       '#default_value' => $connection_default['debug'],
-    ),
-  );
+    ],
+  ];
+  $form['#submit'][] = 'islandora_repository_connection_config_form_islandora_repository_admin_submit';
+}
+
+/**
+ * Submit handler for the Islandora config additions.
+ */
+function islandora_repository_connection_config_form_islandora_repository_admin_submit($form, FormStateInterface $form_state) {
+  $config = \Drupal::configFactory()->getEditable('islandora_repository_connection_config.settings');
+  $config->set('islandora_repository_connection_config', $form_state->getValue('islandora_repository_connection_config'));
+  $config->save();
 }
 
 /**
@@ -85,11 +103,11 @@ function islandora_repository_connection_config_form_islandora_repository_admin_
  *
  * Sets a form error if the value is not zero or a positive integer.
  */
-function islandora_repository_connection_config_zero_or_positive_integer_validate($element, &$form_state) {
+function islandora_repository_connection_config_zero_or_positive_integer_validate($element, FormStateInterface $form_state) {
   // Largely copy/pasta from Drupal's element_validate_integer_positive().
   $value = $element['#value'];
   if ($value !== '' && (!is_numeric($value) || intval($value) != $value || $value < 0)) {
-    form_error($element, t('%name must be either zero or a positive integer.', array('%name' => $element['#title'])));
+    $form_state->setError($element, t('%name must be either zero or a positive integer.', ['%name' => $element['#title']]));
   }
 }
 
@@ -101,7 +119,7 @@ function islandora_repository_connection_config_zero_or_positive_integer_validat
  *   'islandora_repository_connection_config' variable.
  */
 function islandora_repository_connection_config_get_defaults() {
-  return array(
+  return [
     'cookies' => TRUE,
     'verifyHost' => TRUE,
     'verifyPeer' => TRUE,
@@ -110,5 +128,5 @@ function islandora_repository_connection_config_get_defaults() {
     'userAgent' => NULL,
     'reuseConnection' => TRUE,
     'debug' => FALSE,
-  );
+  ];
 }

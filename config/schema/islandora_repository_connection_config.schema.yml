@@ -1,0 +1,5 @@
+islandora_repository_connection_config.settings:
+  type: mapping
+  label: Settings
+  mapping:
+    islandora_repository_connection_config:
