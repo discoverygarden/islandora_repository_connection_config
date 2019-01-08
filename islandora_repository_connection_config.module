@@ -5,6 +5,8 @@
  * General hook implementations.
  */
 
+use Drupal\Core\Form\FormStateInterface;
+
 /**
  * Implements hook_islandora_repository_connection_construction_alter().
  */
@@ -19,7 +21,7 @@ function islandora_repository_connection_config_islandora_repository_connection_
 /**
  * Implements hook_form_islandora_repository_admin_form_alter().
  */
-function islandora_repository_connection_config_form_islandora_repository_admin_alter(&$form, &$form_state) {
+function islandora_repository_connection_config_form_islandora_repository_admin_alter(&$form, FormStateInterface $form_state) {
   $connection_default = \Drupal::config('islandora_repository_connection_config.settings')->get('islandora_repository_connection_config') +
     islandora_repository_connection_config_get_defaults();
 
@@ -90,11 +92,11 @@ function islandora_repository_connection_config_form_islandora_repository_admin_
  *
  * Sets a form error if the value is not zero or a positive integer.
  */
-function islandora_repository_connection_config_zero_or_positive_integer_validate($element, &$form_state) {
+function islandora_repository_connection_config_zero_or_positive_integer_validate($element, FormStateInterface $form_state) {
   // Largely copy/pasta from Drupal's element_validate_integer_positive().
   $value = $element['#value'];
   if ($value !== '' && (!is_numeric($value) || intval($value) != $value || $value < 0)) {
-    form_error($element, t('%name must be either zero or a positive integer.', ['%name' => $element['#title']]));
+    $form_state->setError($element, t('%name must be either zero or a positive integer.', ['%name' => $element['#title']]));
   }
 }
 
