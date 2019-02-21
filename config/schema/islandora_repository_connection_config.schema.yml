@@ -3,3 +3,21 @@ islandora_repository_connection_config.settings:
   label: Settings
   mapping:
     islandora_repository_connection_config:
+      type: mapping
+      mapping:
+        cookies:
+          type: boolean
+        verifyHost:
+          type: boolean
+        verifyPeer:
+          type: boolean
+        timeout:
+          type: integer
+        connectTimeout:
+          type: integer
+        userAgent:
+          type: string
+        reuseConnection:
+          type: boolean
+        debug:
+          type: boolean
