@@ -101,7 +101,10 @@ function islandora_repository_connection_config_form_islandora_repository_admin_
  */
 function islandora_repository_connection_config_form_islandora_repository_admin_submit($form, FormStateInterface $form_state) {
   $config = \Drupal::configFactory()->getEditable('islandora_repository_connection_config.settings');
-  $config->set('islandora_repository_connection_config', $form_state->getValue('islandora_repository_connection_config'));
+  $values = $form_state->getValue('islandora_repository_connection_config');
+  \Drupal::state()->set('islandora_repository_connection_config_user_agent', $values['userAgent']);
+  unset($values['userAgent']);
+  $config->set('islandora_repository_connection_config', $values);
   $config->save();
 }
 
@@ -132,7 +135,7 @@ function islandora_repository_connection_config_get_defaults() {
     'verifyPeer' => TRUE,
     'timeout' => NULL,
     'connectTimeout' => 5,
-    'userAgent' => NULL,
+    'userAgent' => \Drupal::state()->get('islandora_repository_connection_config_user_agent'),
     'reuseConnection' => TRUE,
     'debug' => FALSE,
   ];
