@@ -12,16 +12,14 @@ use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
  * Implements hook_islandora_repository_connection_construction_alter().
  */
 function islandora_repository_connection_config_islandora_repository_connection_construction_alter($instance) {
-  $config = \Drupal::config('islandora_repository_connection_config.settings');
 
-  $settings = $config->get('islandora_repository_connection_config') +
-    islandora_repository_connection_config_get_defaults();
+  $settings = _islandora_repository_connection_get_current_config();
   foreach ($settings as $key => $value) {
     $instance->{$key} = $value;
   }
 
   if ($instance instanceof RefinableCacheableDependencyInterface) {
-    $instance->addCacheableDependency($config);
+    $instance->addCacheableDependency(\Drupal::config('islandora_repository_connection_config.settings'));
   }
 }
 
@@ -29,8 +27,7 @@ function islandora_repository_connection_config_islandora_repository_connection_
  * Implements hook_form_islandora_repository_admin_form_alter().
  */
 function islandora_repository_connection_config_form_islandora_repository_admin_alter(&$form, FormStateInterface $form_state) {
-  $connection_default = \Drupal::config('islandora_repository_connection_config.settings')->get('islandora_repository_connection_config') +
-    islandora_repository_connection_config_get_defaults();
+  $connection_default = _islandora_repository_connection_get_current_config();
 
   $form['islandora_repository_connection_config'] = [
     '#type' => 'details',
@@ -101,9 +98,11 @@ function islandora_repository_connection_config_form_islandora_repository_admin_
  */
 function islandora_repository_connection_config_form_islandora_repository_admin_submit($form, FormStateInterface $form_state) {
   $config = \Drupal::configFactory()->getEditable('islandora_repository_connection_config.settings');
+
   $values = $form_state->getValue('islandora_repository_connection_config');
   \Drupal::state()->set('islandora_repository_connection_config_user_agent', $values['userAgent']);
   unset($values['userAgent']);
+
   $config->set('islandora_repository_connection_config', $values);
   $config->save();
 }
@@ -135,8 +134,28 @@ function islandora_repository_connection_config_get_defaults() {
     'verifyPeer' => TRUE,
     'timeout' => NULL,
     'connectTimeout' => 5,
-    'userAgent' => \Drupal::state()->get('islandora_repository_connection_config_user_agent'),
+    'userAgent' => '',
     'reuseConnection' => TRUE,
     'debug' => FALSE,
   ];
+}
+
+/**
+ * Helper; acquire the present configuration.
+ *
+ * Merge together the config and state info.
+ *
+ * @return array
+ *   An associative array of the mapping the values to use.
+ */
+function _islandora_repository_connection_get_current_config() {
+  $config = \Drupal::config('islandora_repository_connection_config.settings');
+
+  $to_return = $config->get('islandora_repository_connection_config');
+  $to_return += [
+    'userAgent' => \Drupal::state()->get('islandora_repository_connection_config_user_agent'),
+  ];
+  $to_return += islandora_repository_connection_config_get_defaults();
+
+  return $to_return;
 }
