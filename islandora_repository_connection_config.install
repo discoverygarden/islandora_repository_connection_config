@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Hook implementations for (un)installation and updating.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function islandora_repository_connection_config_uninstall() {
+  \Drupal::state()->delete('islandora_repository_connection_config_user_agent');
+}

@@ -15,8 +15,6 @@ islandora_repository_connection_config.settings:
           type: integer
         connectTimeout:
           type: integer
-        userAgent:
-          type: string
         reuseConnection:
           type: boolean
         debug:
