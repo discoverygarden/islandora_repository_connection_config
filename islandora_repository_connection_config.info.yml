@@ -1,5 +1,5 @@
 name: 'Islandora Connection Config'
-description: 'Configure Tuque connection specifics'
+description: 'Configure Tuque connection specifics.'
 package: 'Islandora'
 configure: islandora.repository_admin
 core: 8.x
